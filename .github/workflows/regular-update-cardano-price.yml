@@ -1,0 +1,36 @@
+name: Docker and CURL Workflow
+
+on:
+  schedule:
+    - cron: '45 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run-docker-and-curl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Docker container
+        run: |
+          docker run --name mycontainer -d -p 8080:8080 ${{ vars.CONTAINER_IMAGE_NAME }}
+
+      - name: Create JSON file
+        run: |
+          echo '{
+            "ticker": "ADAUSD",
+            "name": "cardano",
+            "crypto": true,
+            "color": false,
+            "nickname": true,
+            "frequency": 15,
+            "decimals": 2,
+            "discord_bot_token": "${{ secrets.DISCORD_BOT_ADAUSD_TOKEN }}"
+          }' > cardano.json
+
+      - name: Send POST request
+        run: |
+          curl -X POST -H "Content-type: application/json" -d @cardano.json http://localhost:8080/ticker
+
+      - name: Wait for response
+        run: |
+          sleep 3700
