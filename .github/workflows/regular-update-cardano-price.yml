@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Run Docker container
         run: |
-          docker run --name mycontainer -d -p 8080:8080 ${{ vars.CONTAINER_IMAGE_NAME }}
+          docker run -q -d -p 8080:8080 ${{ vars.CONTAINER_IMAGE_NAME }}
 
       - name: Create JSON file
         run: |
@@ -26,11 +26,11 @@ jobs:
             "frequency": 15,
             "decimals": 2,
             "discord_bot_token": "${{ secrets.DISCORD_BOT_ADAUSD_TOKEN }}"
-          }' > cardano.json
+          }' > post-payload.json
 
       - name: Send POST request
         run: |
-          curl -X POST -H "Content-type: application/json" -d @cardano.json http://localhost:8080/ticker
+          curl -X POST -H "Content-type: application/json" -d @post-payload.json http://localhost:8080/ticker
 
       - name: Wait for response
         run: |
