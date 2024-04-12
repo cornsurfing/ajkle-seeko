@@ -2,7 +2,7 @@ name: Docker and CURL Workflow
 
 on:
   schedule:
-    - cron: '45 1-23 * * *'
+    - cron: '45 3,6,9,12,15,18,21 * * *'
     - cron: '45 0 * * *'
   workflow_dispatch:
 
@@ -35,4 +35,4 @@ jobs:
 
       - name: Wait for response
         run: |
-          sleep 3700
+          sleep 10900
